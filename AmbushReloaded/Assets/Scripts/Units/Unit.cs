@@ -64,15 +64,15 @@ public class Unit : MonoBehaviour
 
     // ######## ACTIONS ######## // 
 
-    private void MoveToTile(Tile targetTile){
+    private void MoveToTile(GameTile targetTile){
         // TODO: Implement
     }
 
-    private void Shoot(Tile targetTile){
+    private void Shoot(GameTile targetTile){
         // TODO: Implement
     }
 
-    private void ThrowGrenade(Tile targetTile){
+    private void ThrowGrenade(GameTile targetTile){
         // TODO: Implement
     }
 

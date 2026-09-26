@@ -11,14 +11,14 @@ public class BattleMapTerrain
 {
     public BattleMapTerrainType CurrentTerrainType { get; private set; }
 
-    // Terrain properties
+    // #### Terrain properties #### //
     public bool IsWalkable { get; private set; }
     public bool BlocksLineOfSight { get; private set; }
     public bool ProvidesCover { get; private set; }
     public int MovementCost { get; private set; }
 
 
-    // #### PUBLIC SETTERS #### //}
+    // #### PUBLIC SETTERS #### //
 
     public void SetTerrain(BattleMapTerrainType newTerrainType)
     {

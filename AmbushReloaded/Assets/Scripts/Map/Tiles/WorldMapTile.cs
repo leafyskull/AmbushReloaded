@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class WorldMapTile : Tile
+public class WorldMapTile : GameTile
 {
     public Unit OccupyingSquad { get; private set; }
     public Supplies Supplies { get; private set; }

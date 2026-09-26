@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BattleMapTile : Tile
+public class BattleMapTile : GameTile
 {
     public Unit OccupyingUnit { get; private set; }
     public BattleMapTerrain Terrain { get; private set; }
