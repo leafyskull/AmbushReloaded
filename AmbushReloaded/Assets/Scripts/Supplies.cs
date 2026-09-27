@@ -10,10 +10,17 @@ public enum SuppliesType
 
 public class Supplies : MonoBehaviour
 {
-    public SpriteRenderer _spriteRenderer;
-    public SuppliesType _suppliesType { get; private set; }
-    public int _suppliesAmount {get; private set; }
+    public SuppliesType SuppliesType { get; private set; }
+    public int SuppliesAmount {get; private set; }
 
-    
+
+
+    void Start()
+    {
+        this.SuppliesType = SuppliesType.AMMO;
+        this.SuppliesAmount = 2;
+    }
+
+     
 
 }

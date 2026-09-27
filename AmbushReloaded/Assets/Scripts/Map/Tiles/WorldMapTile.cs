@@ -1,45 +1,48 @@
+using System;
 using UnityEngine;
 
 public class WorldMapTile : GameTile
 {
     public Squad OccupyingSquad { get; private set; }
     public Supplies Supplies { get; private set; }
-
     public bool IsOccupied => OccupyingSquad != null;
-    private SpriteRenderer squadMarker;
 
-    // A small copy of the tile sprite serves as a temporary squad marker.
-    public void ShowSquadMarker(Color color)
+
+    public void SetOccupyingSquad(Squad squad)
     {
-        if (squadMarker == null)
+        if (OccupyingSquad == squad) return;
+        if (squad != null && IsOccupied)
         {
-            SpriteRenderer ground = GetComponent<SpriteRenderer>();
-            if (ground == null || ground.sprite == null) return;
-
-            GameObject marker = new GameObject("Squad Marker");
-            marker.transform.SetParent(transform, false);
-            marker.transform.localScale = Vector3.one * 0.45f;
-            squadMarker = marker.AddComponent<SpriteRenderer>();
-            squadMarker.sprite = ground.sprite;
-            squadMarker.sharedMaterial = ground.sharedMaterial;
-            squadMarker.sortingLayerID = ground.sortingLayerID;
-            squadMarker.sortingOrder = ground.sortingOrder + 1;
+            throw new InvalidOperationException("The destination tile already has a squad.");
         }
 
-        squadMarker.color = color;
-        squadMarker.gameObject.SetActive(true);
-    }
-
-    // Pass null to clear the tile when a squad leaves.
-    public void SetOccupyingSquad(Squad newOccupyingSquad)
-    {
-        OccupyingSquad = newOccupyingSquad;
-        if (newOccupyingSquad == null && squadMarker != null)
+        // If squad is null, clear the tile's occupying squad.
+        if (squad == null)
         {
-            squadMarker.gameObject.SetActive(false);
+            if (OccupyingSquad != null)
+            {
+                OccupyingSquad.transform.SetParent(transform.parent, true);
+            }
+            OccupyingSquad = null;
+            return;
         }
+
+        // Remove squad from previous tile.
+        WorldMapTile previousTile = squad.GetComponentInParent<WorldMapTile>();
+        if (previousTile != null && previousTile != this && previousTile.OccupyingSquad == squad)
+        {
+            previousTile.SetOccupyingSquad(null);
+        }
+
+        // Set squad in this tile.
+        OccupyingSquad = squad;
+        squad.transform.SetParent(transform, false);
+        squad.transform.localPosition = Vector3.zero;
     }
 
+    // SetSupplies(): Sets supplies on the tile.
+    //
+    // newSupplies: The supplies to assign to the tile.
     public void SetSupplies(Supplies newSupplies)
     {
         Supplies = newSupplies;

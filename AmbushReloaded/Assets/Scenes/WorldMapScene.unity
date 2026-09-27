@@ -382,7 +382,7 @@ GameObject:
   - component: {fileID: 1217176867}
   - component: {fileID: 1217176866}
   m_Layer: 0
-  m_Name: MapController
+  m_Name: WorldMapController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -401,7 +401,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldMapController
   _worldMapTilePrefab: {fileID: 6351319081908647249, guid: 3b3379de355e0d24ab3177ee344c0bd6, type: 3}
-  _suppliesPrefab: {fileID: 0}
+  _suppliesPrefab: {fileID: 5206949077665770924, guid: 0a6c49d04a27f474d9c81d289b1cfa2c, type: 3}
+  _playerSquadPrefab: {fileID: 4579271564892453447, guid: 5ec9694e74d0e134db6cde5fb254223a, type: 3}
+  _enemySquadPrefab: {fileID: 4008307529712597748, guid: 91cc2925f2f669d46b600917395e178a, type: 3}
 --- !u!4 &1217176867
 Transform:
   m_ObjectHideFlags: 0

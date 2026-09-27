@@ -10,6 +10,8 @@ public class WorldMapController : MonoBehaviour
     [FormerlySerializedAs("_battleMapTilePrefab")]
     [SerializeField] private WorldMapTile _worldMapTilePrefab;
     [SerializeField] private Supplies _suppliesPrefab;
+    [SerializeField] private PlayerSquad _playerSquadPrefab;
+    [SerializeField] private EnemySquad _enemySquadPrefab;
 
     private const int MAP_HEIGHT = 8;
     private const int MAP_WIDTH = 8;
@@ -18,7 +20,6 @@ public class WorldMapController : MonoBehaviour
     private WorldMapTile[,] tileGrid = new WorldMapTile[MAP_WIDTH, MAP_HEIGHT];
     public WorldMapTile SelectedTile { get; private set; }
     public WorldMapTile PlayerTile { get; private set; }
-    private static readonly Color PlayerColor = new Color(0.2f, 0.65f, 1f);
 
     private void Update()
     {
@@ -65,9 +66,7 @@ public class WorldMapController : MonoBehaviour
         }
 
         Squad squad = PlayerTile.OccupyingSquad;
-        PlayerTile.SetOccupyingSquad(null);
         destination.SetOccupyingSquad(squad);
-        destination.ShowSquadMarker(PlayerColor);
         PlayerTile = destination;
         SelectTile(destination);
         return true;
@@ -163,14 +162,17 @@ public class WorldMapController : MonoBehaviour
     // SpawnEnemySquads(): Spawns the enemy squads for the map.
     public void SpawnEnemySquads()
     {
-        // Placeholder squad data; squads are not implemented yet.
+        if (_enemySquadPrefab == null)
+        {
+            Debug.LogError("Assign an EnemySquad prefab before spawning enemies.", this);
+            return;
+        }
         for (int x = 0; x < ENEMY_SQUAD_COUNT; x++)
         {
             WorldMapTile tile = GetTile(new Vector2Int(x, MAP_HEIGHT - 1));
             if (tile != null && !tile.IsOccupied)
             {
-                tile.SetOccupyingSquad(new Squad());
-                tile.ShowSquadMarker(Color.red);
+                tile.SetOccupyingSquad(Instantiate(_enemySquadPrefab, tile.transform));
             }
         }
     }
@@ -202,11 +204,15 @@ public class WorldMapController : MonoBehaviour
     public void SpawnPlayerSquad()
     {
         if (PlayerTile != null) return;
+        if (_playerSquadPrefab == null)
+        {
+            Debug.LogError("Assign a PlayerSquad prefab before spawning the player.", this);
+            return;
+        }
         WorldMapTile tile = GetTile(new Vector2Int(MAP_WIDTH / 2, 0));
         if (tile != null && !tile.IsOccupied)
         {
-            tile.SetOccupyingSquad(new Squad());
-            tile.ShowSquadMarker(PlayerColor);
+            tile.SetOccupyingSquad(Instantiate(_playerSquadPrefab, tile.transform));
             PlayerTile = tile;
         }
     }
