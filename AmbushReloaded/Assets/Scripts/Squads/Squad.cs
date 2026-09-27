@@ -5,10 +5,11 @@
 
 
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Squad
+public class Squad : MonoBehaviour
 {
-    public List<Unit> units { get; private set; }
+    public List<Unit> units { get; private set; } = new List<Unit>();
 
 
 

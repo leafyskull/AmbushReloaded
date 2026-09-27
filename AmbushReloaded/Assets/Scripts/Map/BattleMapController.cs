@@ -1,76 +1,97 @@
-// BattleMapController.cs: This contains the class definition for the BattleMap.
-//
-// The BattleMap is where battles will take place between the player and enemy units.
-
-
-
 using UnityEngine;
 
 public class BattleMapController : MonoBehaviour
 {
-    public static BattleMapController Instance;
+    public static BattleMapController Instance { get; private set; }
 
-    // Prefab references
-    [SerializeField] private GameObject _battleMapTilePrefab;
+    [SerializeField] private BattleMapTile _battleMapTilePrefab;
 
-    // Private variables
+    private const int MAP_HEIGHT = 8;
+    private const int MAP_WIDTH = 8;
     private BattleMapTile[,] tileGrid = new BattleMapTile[MAP_WIDTH, MAP_HEIGHT];
 
-    // BattleMap data
-    // TODO: Maybe map class that WorldMapController (this) manages?
-    const int MAP_HEIGHT = 8;
-    const int MAP_WIDTH = 8;
-    private const int ENEMY_SQUAD_COUNT = 2;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-        // Set reference to Instance
-        if (Instance == null) { Instance = this; }
-        else { Destroy(gameObject); }
-        DontDestroyOnLoad(gameObject);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-        // TODO: Have map generation handled by a GameController?
-        GenerateBattleMap();
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        if (Instance == this)
+        {
+            GenerateBattleMap();
+        }
+    }
 
-    // ######## MAP GENERATION & SPAWNING ######## //
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
-    // GenerateMap(): Generates the map for the level.
-    public void GenerateBattleMap(){
+    public void GenerateBattleMap()
+    {
+        if (_battleMapTilePrefab == null)
+        {
+            Debug.LogError("Assign a BattleMapTile prefab before generating the battle map.", this);
+            return;
+        }
+
+        // Remove the previous tiles and their child objects when regenerating.
+        foreach (BattleMapTile tile in tileGrid)
+        {
+            if (tile != null)
+            {
+                tile.gameObject.SetActive(false);
+                Destroy(tile.gameObject);
+            }
+        }
 
         tileGrid = new BattleMapTile[MAP_WIDTH, MAP_HEIGHT];
+        for (int y = 0; y < MAP_HEIGHT; y++)
+        {
+            for (int x = 0; x < MAP_WIDTH; x++)
+            {
+                BattleMapTile tile = Instantiate(_battleMapTilePrefab, transform);
+                tile.transform.localPosition = new Vector3(x, y, 0);
+                tile.SetCoordinate(x, y);
 
-        // Generate coordinates & tiles
-        for (int y = 0; y < MAP_HEIGHT; y++){
-            for (int x = 0; x < MAP_WIDTH; x++){
-
-                Coordinate newCoordinate = new Coordinate(x, y);
-                Vector3 position = new Vector3(x, y, 0);
-
-                GameObject tileObject = Instantiate(
-                    _battleMapTilePrefab,
-                    position,
-                    Quaternion.identity,
-                    transform
-                );
-
-                tileGrid[x, y].SetCoordinate(newCoordinate);
-                tileGrid[x, y] = tileObject.GetComponent<BattleMapTile>();
+                BattleMapTerrain terrain = new BattleMapTerrain();
+                terrain.SetTerrain(BattleMapTerrainType.OPEN);
+                tile.SetTerrain(terrain);
+                tileGrid[x, y] = tile;
             }
         }
     }
 
-    // SpawnEnemies(): Spawns the enemies for the map.
-    public void SpawnEnemyUnits(){
-        // TODO: Implement        
+    // Returns null for out-of-bounds coordinates or tiles not generated yet.
+    public BattleMapTile GetTile(Vector2Int coordinate)
+    {
+        if (coordinate.x < 0 || coordinate.x >= MAP_WIDTH ||
+            coordinate.y < 0 || coordinate.y >= MAP_HEIGHT)
+        {
+            return null;
+        }
+
+        return tileGrid[coordinate.x, coordinate.y];
     }
 
-    // SpawnPlayer(): Spawns the player on the map.
-    public void SpawnPlayerUnits(){
-        // TODO: Implement
+    public void SpawnEnemyUnits()
+    {
+        // TODO: Instantiate unit prefabs and assign them with tile.SetOccupyingUnit(unit).
     }
 
+    public void SpawnPlayerUnits()
+    {
+        // TODO: Instantiate unit prefabs and assign them with tile.SetOccupyingUnit(unit).
+    }
 }

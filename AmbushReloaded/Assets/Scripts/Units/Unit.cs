@@ -9,7 +9,6 @@ public class Unit : MonoBehaviour
 
     // Unit properties
     public int Health { get; private set; }
-    public Coordinate Coordinate { get; private set; }
     public Weapon CurrentWeapon { get; private set; }
 
     // Unit Supplies
@@ -41,7 +40,6 @@ public class Unit : MonoBehaviour
     public void SetGrenadeCount(int newGrenadeCount) { this.GrenadeCount = newGrenadeCount; }
     public void SetHealthPackCount(int newHealthPackCount) { this.HealthPackCount = newHealthPackCount; }
 
-    public void SetCoordinate(Coordinate newCoordinate) { this.Coordinate = newCoordinate; }
     public void SetHealth(int newHealth) { this.Health = newHealth; }
     public void SetWeapon(Weapon newWeapon) { this.CurrentWeapon = newWeapon; }
     

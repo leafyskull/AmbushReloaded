@@ -250,7 +250,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 3.5, y: 3.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -399,7 +399,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f46be11b061c3643a9563bf66e3d995, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MapController
+  m_EditorClassIdentifier: Assembly-CSharp::WorldMapController
+  _worldMapTilePrefab: {fileID: 6351319081908647249, guid: 3b3379de355e0d24ab3177ee344c0bd6, type: 3}
+  _suppliesPrefab: {fileID: 0}
 --- !u!4 &1217176867
 Transform:
   m_ObjectHideFlags: 0

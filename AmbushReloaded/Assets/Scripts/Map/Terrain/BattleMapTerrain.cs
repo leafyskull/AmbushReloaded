@@ -1,15 +1,9 @@
 using UnityEngine;
 using System;
 
-public enum BattleMapTerrainType
-{
-    OPEN,
-    TREE,
-}
-
 public class BattleMapTerrain
 {
-    public BattleMapTerrainType CurrentTerrainType { get; private set; }
+    public BattleMapTerrainType TerrainType { get; private set; }
 
     // #### Terrain properties #### //
     public bool IsWalkable { get; private set; }
@@ -20,9 +14,11 @@ public class BattleMapTerrain
 
     // #### PUBLIC SETTERS #### //
 
+    // SetTerrain(): Sets a BattleMapTerrain's TerrainType,
+    // and updates it's properties accordingly.
     public void SetTerrain(BattleMapTerrainType newTerrainType)
     {
-        CurrentTerrainType = newTerrainType;
+        TerrainType = newTerrainType;
 
         // Set properties associated with the terrain.
         switch (newTerrainType)
@@ -48,7 +44,7 @@ public class BattleMapTerrain
     }
 
 
-    // SetRandomTerrain(): Sets a random BattleMapTerrainType
+    // SetRandomTerrain(): Sets a random TerrainType
     public void SetRandomTerrain()
     {
         Array terrainTypes = Enum.GetValues(typeof(BattleMapTerrainType));

@@ -1,9 +1,6 @@
 using UnityEngine;
 
-public class Player : Unit
+public class EnemyUnit : Unit
 {
     // TODO: Implement
-
-    
-
 }
