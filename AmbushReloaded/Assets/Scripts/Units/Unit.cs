@@ -11,10 +11,15 @@ public class Unit : MonoBehaviour
     [SerializeField] Sprite _playerSprite;
     [SerializeField] Sprite _enemySprite;
 
+    [SerializeField, Min(1)] private int _shotDamage = 1;
+    [SerializeField, Min(1)] private int _grenadeDamage = 3;
+    [SerializeField, Min(0)] private int _grenadeRadius = 1;
+
     // Unit properties
     public int Health { get; private set; }
     public Weapon CurrentWeapon { get; private set; }
     public Team CurrentTeam { get; private set; }
+    public BattleMapTile CurrentTile => GetComponentInParent<BattleMapTile>();
 
     // Unit Supplies
     public int AmmoCount { get; private set; }
@@ -30,8 +35,9 @@ public class Unit : MonoBehaviour
     const int MAX_MEDKIT_COUNT = 4;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
+        if (_spriteRenderer == null) _spriteRenderer = GetComponent<SpriteRenderer>();
         this.AmmoCount = 4;
         this.GrenadeCount = 4;
         this.HealthPackCount = 4;
@@ -61,6 +67,13 @@ public class Unit : MonoBehaviour
 
     // Die(): Destroys the unit.
     public void Die(){
+        if (BattleMapController.Instance != null && BattleMapController.Instance.SelectedUnit == this)
+        {
+            BattleMapController.Instance.ClearSelection();
+        }
+        BattleMapTile tile = CurrentTile;
+        if (tile != null && tile.OccupyingUnit == this) tile.SetOccupyingUnit(null);
+        gameObject.SetActive(false);
         Destroy(gameObject);
     }
 
@@ -68,22 +81,70 @@ public class Unit : MonoBehaviour
     {
         this.CurrentTeam = newTeam;
         
-        _spriteRenderer.sprite = newTeam == Team.Player ? _playerSprite : _enemySprite;
+        if (_spriteRenderer != null)
+        {
+            _spriteRenderer.sprite = newTeam == Team.Player ? _playerSprite : _enemySprite;
+        }
     }
 
 
     // ######## ACTIONS ######## // 
 
-    private void MoveToTile(GameTile targetTile){
-        // TODO: Implement
+    private bool IsValidTarget(BattleMapTile targetTile)
+    {
+        BattleMapTile source = CurrentTile;
+        if (Health <= 0 || source == null || source.OccupyingUnit != this || targetTile == null) return false;
+        BattleMapController map = source.GetComponentInParent<BattleMapController>();
+        return map != null && map.GetTile(source.Coordinate) == source &&
+            map.GetTile(targetTile.Coordinate) == targetTile;
     }
 
-    private void Shoot(GameTile targetTile){
-        // TODO: Implement
+    public bool MoveToTile(BattleMapTile targetTile)
+    {
+        if (!IsValidTarget(targetTile) || targetTile.IsOccupied ||
+            targetTile.Terrain == null || !targetTile.Terrain.IsWalkable ||
+            CurrentTile.GetManhattanDistance(targetTile) != 1) return false;
+
+        targetTile.SetOccupyingUnit(this);
+        return true;
     }
 
-    private void ThrowGrenade(GameTile targetTile){
-        // TODO: Implement
+    public bool Shoot(BattleMapTile targetTile)
+    {
+        if (!IsValidTarget(targetTile) || AmmoCount <= 0 || targetTile.OccupyingUnit == this) return false;
+
+        AmmoCount--;
+        Unit target = targetTile.OccupyingUnit;
+        if (target != null)
+        {
+            if (CurrentWeapon == null || Random.Range(0, 100) < CurrentWeapon.ChanceToHit)
+            {
+                target.TakeDamage(CurrentWeapon != null ? CurrentWeapon.Damage : _shotDamage);
+            }
+        }
+        return true;
+    }
+
+    public bool ThrowGrenade(BattleMapTile targetTile)
+    {
+        if (!IsValidTarget(targetTile) || GrenadeCount <= 0) return false;
+
+        BattleMapController map = CurrentTile.GetComponentInParent<BattleMapController>();
+        GrenadeCount--;
+        // Splash damage includes friendly units and the throwing unit.
+        for (int y = -_grenadeRadius; y <= _grenadeRadius; y++)
+        {
+            for (int x = -_grenadeRadius; x <= _grenadeRadius; x++)
+            {
+                if (Mathf.Abs(x) + Mathf.Abs(y) > _grenadeRadius) continue;
+                BattleMapTile tile = map.GetTile(targetTile.Coordinate + new Vector2Int(x, y));
+                if (tile != null && tile.OccupyingUnit != null)
+                {
+                    tile.OccupyingUnit.TakeDamage(_grenadeDamage);
+                }
+            }
+        }
+        return true;
     }
 
     private void HealUnit(Unit targetUnit){
