@@ -10,8 +10,10 @@ using UnityEngine;
 public class Squad : MonoBehaviour
 {
     public List<Unit> units { get; private set; } = new List<Unit>();
+    public Team CurrentTeam { get; private set; }
 
-
-
-
+    public void SetTeam(Team newTeam)
+    {
+        CurrentTeam = newTeam;
+    }
 }

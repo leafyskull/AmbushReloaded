@@ -10,6 +10,7 @@ public class Unit : MonoBehaviour
     // Unit properties
     public int Health { get; private set; }
     public Weapon CurrentWeapon { get; private set; }
+    public Team CurrentTeam { get; private set; }
 
     // Unit Supplies
     public int AmmoCount { get; private set; }
@@ -57,6 +58,11 @@ public class Unit : MonoBehaviour
     // Die(): Destroys the unit.
     public void Die(){
         Destroy(gameObject);
+    }
+
+    public void SetTeam(Team newTeam)
+    {
+        this.CurrentTeam = newTeam;
     }
 
 

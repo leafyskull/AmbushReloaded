@@ -10,8 +10,7 @@ public class WorldMapController : MapController<WorldMapTile>
     [FormerlySerializedAs("_battleMapTilePrefab")]
     [SerializeField] private WorldMapTile _worldMapTilePrefab;
     [SerializeField] private Supplies _suppliesPrefab;
-    [SerializeField] private PlayerSquad _playerSquadPrefab;
-    [SerializeField] private EnemySquad _enemySquadPrefab;
+    [SerializeField] private Squad _squadPrefab;
 
     private const int ENEMY_SQUAD_COUNT = 2;
     private const int SUPPLIES_COUNT = 3;
@@ -105,21 +104,33 @@ public class WorldMapController : MapController<WorldMapTile>
         SpawnEnemySquads();
     }
 
+    // Returns null if the prefab is missing or the tile cannot accept a squad.
+    public Squad SpawnSquad(WorldMapTile spawnTile, Team team)
+    {
+        if (_squadPrefab == null)
+        {
+            Debug.LogError("Assign a Squad prefab before spawning squads.", this);
+            return null;
+        }
+
+        if (spawnTile == null || GetTile(spawnTile.Coordinate) != spawnTile ||
+            spawnTile.IsOccupied)
+        {
+            return null;
+        }
+
+        Squad squad = Instantiate(_squadPrefab, spawnTile.transform);
+        squad.SetTeam(team);
+        spawnTile.SetOccupyingSquad(squad);
+        return squad;
+    }
+
     // SpawnEnemySquads(): Spawns the enemy squads for the map.
     public void SpawnEnemySquads()
     {
-        if (_enemySquadPrefab == null)
-        {
-            Debug.LogError("Assign an EnemySquad prefab before spawning enemies.", this);
-            return;
-        }
         for (int x = 0; x < ENEMY_SQUAD_COUNT; x++)
         {
-            WorldMapTile tile = GetTile(new Vector2Int(x, MAP_HEIGHT - 1));
-            if (tile != null && !tile.IsOccupied)
-            {
-                tile.SetOccupyingSquad(Instantiate(_enemySquadPrefab, tile.transform));
-            }
+            SpawnSquad(GetTile(new Vector2Int(x, MAP_HEIGHT - 1)), Team.Enemy);
         }
     }
 
@@ -150,15 +161,9 @@ public class WorldMapController : MapController<WorldMapTile>
     public void SpawnPlayerSquad()
     {
         if (PlayerTile != null) return;
-        if (_playerSquadPrefab == null)
-        {
-            Debug.LogError("Assign a PlayerSquad prefab before spawning the player.", this);
-            return;
-        }
         WorldMapTile tile = GetTile(new Vector2Int(MAP_WIDTH / 2, 0));
-        if (tile != null && !tile.IsOccupied)
+        if (SpawnSquad(tile, Team.Player) != null)
         {
-            tile.SetOccupyingSquad(Instantiate(_playerSquadPrefab, tile.transform));
             PlayerTile = tile;
         }
     }

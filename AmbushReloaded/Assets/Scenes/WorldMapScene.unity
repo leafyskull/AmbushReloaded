@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleMapController
   _battleMapTilePrefab: {fileID: 6922202909841443830, guid: 330b70ce7e5eb3947abc2c17c60e7e69, type: 3}
+  _unitPrefab: {fileID: 2291656770433766030, guid: db0ec0f55d319574181b47d9edce92a0, type: 3}
 --- !u!4 &499387047
 Transform:
   m_ObjectHideFlags: 0
