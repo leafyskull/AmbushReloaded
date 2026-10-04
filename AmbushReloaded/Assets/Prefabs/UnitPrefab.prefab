@@ -107,3 +107,6 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 7217417490772970502}
   _playerSprite: {fileID: 21300000, guid: 49a2fe671e68b5b4ba2e70e8b59d1363, type: 3}
   _enemySprite: {fileID: 21300000, guid: c88c4183dad2a894093a7c240cc8c323, type: 3}
+  _shotDamage: 2
+  _grenadeDamage: 4
+  _grenadeRadius: 1

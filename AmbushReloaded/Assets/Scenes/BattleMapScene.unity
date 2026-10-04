@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &212406039
+--- !u!1 &499387045
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,37 +127,36 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 212406041}
-  - component: {fileID: 212406040}
+  - component: {fileID: 499387047}
+  - component: {fileID: 499387046}
   m_Layer: 0
-  m_Name: WorldMapController
+  m_Name: BattleMapController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &212406040
+--- !u!114 &499387046
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 212406039}
+  m_GameObject: {fileID: 499387045}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f46be11b061c3643a9563bf66e3d995, type: 3}
+  m_Script: {fileID: 11500000, guid: d0636ce4754a48a4fb1f986b4852c445, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WorldMapController
-  _worldMapTilePrefab: {fileID: 6351319081908647249, guid: 3b3379de355e0d24ab3177ee344c0bd6, type: 3}
-  _suppliesPrefab: {fileID: 5206949077665770924, guid: 0a6c49d04a27f474d9c81d289b1cfa2c, type: 3}
-  _squadPrefab: {fileID: 7319690818803085645, guid: 7bd4354e1bfa2444693107a51b4f706b, type: 3}
---- !u!4 &212406041
+  m_EditorClassIdentifier: Assembly-CSharp::BattleMapController
+  _battleMapTilePrefab: {fileID: 6922202909841443830, guid: 330b70ce7e5eb3947abc2c17c60e7e69, type: 3}
+  _unitPrefab: {fileID: 2291656770433766030, guid: db0ec0f55d319574181b47d9edce92a0, type: 3}
+--- !u!4 &499387047
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 212406039}
+  m_GameObject: {fileID: 499387045}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -393,4 +392,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 619394802}
-  - {fileID: 212406041}
+  - {fileID: 499387047}

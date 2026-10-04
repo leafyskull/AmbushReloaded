@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldMapTile : GameTile
@@ -6,6 +7,17 @@ public class WorldMapTile : GameTile
     public Squad OccupyingSquad { get; private set; }
     public Supplies Supplies { get; private set; }
     public bool IsOccupied => OccupyingSquad != null;
+    private readonly List<Squad> ambushSquads = new List<Squad>();
+    public IReadOnlyList<Squad> AmbushSquads => ambushSquads.AsReadOnly();
+    public bool IsAmbush => ambushSquads.Exists(squad => squad != null && squad.CurrentTeam == Team.Enemy);
+
+    public void ClearAmbush() => ambushSquads.Clear();
+
+    public void AddAmbushSquad(Squad squad)
+    {
+        if (squad != null && squad.CurrentTeam == Team.Enemy && !ambushSquads.Contains(squad))
+            ambushSquads.Add(squad);
+    }
 
 
     public void SetOccupyingSquad(Squad squad)

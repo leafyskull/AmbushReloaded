@@ -19,6 +19,7 @@ public class Unit : MonoBehaviour
     public int Health { get; private set; }
     public Weapon CurrentWeapon { get; private set; }
     public Team CurrentTeam { get; private set; }
+    public Squad CurrentSquad { get; internal set; }
     public BattleMapTile CurrentTile => GetComponentInParent<BattleMapTile>();
 
     // Unit Supplies
@@ -67,6 +68,7 @@ public class Unit : MonoBehaviour
 
     // Die(): Destroys the unit.
     public void Die(){
+        if (CurrentSquad != null) CurrentSquad.RemoveUnit(this);
         if (BattleMapController.Instance != null && BattleMapController.Instance.SelectedUnit == this)
         {
             BattleMapController.Instance.ClearSelection();
@@ -75,6 +77,11 @@ public class Unit : MonoBehaviour
         if (tile != null && tile.OccupyingUnit == this) tile.SetOccupyingUnit(null);
         gameObject.SetActive(false);
         Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (CurrentSquad != null) CurrentSquad.RemoveUnit(this);
     }
 
     public void SetTeam(Team newTeam)

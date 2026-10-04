@@ -15,6 +15,7 @@ public class BattleMapController : MapController<BattleMapTile>
     public Unit SelectedUnit { get; private set; }
     public UnitAction SelectedAction { get; private set; } = UnitAction.MOVE;
     private string actionMessage = "";
+    public BattleEncounter Encounter { get; private set; }
     private Rect ActionPanelRect => new Rect(10, Screen.height - 210, 320, 200);
 
     private void Update()
@@ -138,13 +139,13 @@ public class BattleMapController : MapController<BattleMapTile>
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
         if (Instance == this)
         {
+            Encounter = BattleEncounterTransfer.Consume();
             GenerateBattleMap();
         }
     }
@@ -205,9 +206,16 @@ public class BattleMapController : MapController<BattleMapTile>
     public void SpawnEnemyUnits()
     {
         Debug.Log("Spawning enemy units...");
-        for (int x = 0; x < NUM_ENEMY_UNITS; x++)
+        int groupCount = Encounter != null ? Encounter.Enemies.Count : 1;
+        for (int group = 0; group < groupCount; group++)
         {
-            SpawnUnit(GetTile(new Vector2Int(x, MAP_HEIGHT - 1)), Team.Enemy);
+            for (int member = 0; member < NUM_ENEMY_UNITS; member++)
+            {
+                int index = group * NUM_ENEMY_UNITS + member;
+                Unit unit = SpawnUnit(GetTile(new Vector2Int(index % MAP_WIDTH, MAP_HEIGHT - 1 - index / MAP_WIDTH)), Team.Enemy);
+                if (unit != null && Encounter != null)
+                    unit.TakeDamage(Encounter.Enemies[group].OpeningDamage);
+            }
         }
     }
 
