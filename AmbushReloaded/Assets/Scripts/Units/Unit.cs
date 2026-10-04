@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
+    // Sprite rendering
+    [SerializeField] SpriteRenderer _spriteRenderer;
+    [SerializeField] Sprite _playerSprite;
+    [SerializeField] Sprite _enemySprite;
 
     // Unit properties
     public int Health { get; private set; }
@@ -63,6 +67,8 @@ public class Unit : MonoBehaviour
     public void SetTeam(Team newTeam)
     {
         this.CurrentTeam = newTeam;
+        
+        _spriteRenderer.sprite = newTeam == Team.Player ? _playerSprite : _enemySprite;
     }
 
 
